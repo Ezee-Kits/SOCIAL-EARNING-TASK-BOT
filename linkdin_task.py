@@ -11,7 +11,7 @@ async def LinkedIn_Task_Bot(page,task,task_url):
     global page_follow_amt
     await page.bringToFront()
 
-    if page_follow_amt >=6 and 'FACEBOOK/Page Follow'.lower() in task.lower():
+    if page_follow_amt >=8 and 'FACEBOOK/Page Follow'.lower() in task.lower():
         print('[ ERROR] TRYING TO RUN FACEBOOK FOLLOW OPTION ')
         return False
     
@@ -53,7 +53,7 @@ async def LinkedIn_Task_Bot(page,task,task_url):
 
         # Wait for it to load fully
         try:
-            await new_tab.waitForSelector('body', {'timeout': 15000})
+            await new_tab.waitForSelector('body', {'timeout': 30000})
         except Exception:
             print("[INFO] Page loaded with dynamic content (no full navigation).")
 
@@ -68,6 +68,8 @@ async def LinkedIn_Task_Bot(page,task,task_url):
         if 'LINKEDIN/Page Follow'.lower() in task.lower():
             try:
                 print('FOLLOWING LINKED-IN PAGE')
+                await new_tab.waitForSelector('button[type="button"]', timeout=10000)
+                done_task = 1
                 await css_scroll_center(new_tab,'button[aria-label^="Follow"][type="button"]')
 
                 result = await new_tab.evaluate("""
@@ -120,6 +122,7 @@ async def LinkedIn_Task_Bot(page,task,task_url):
                 print(f' THIS ERROR OCCURED {err}')
 
 
+   
         elif 'LINKEDIN/Post Comment'.lower() in task.lower():
             try:
                 print('LINKEDIN PAGE COMMENTING')
@@ -154,6 +157,57 @@ async def LinkedIn_Task_Bot(page,task,task_url):
                 print(f' THIS ERROR OCCURED {err}')
 
 
+
+        elif 'LINKEDIN/Page Connect'.lower() in task.lower():
+            try:
+                print('LINKED-IN PAGE CONNECT')
+                await new_tab.waitForSelector('button',timeout = 10000)
+                connect_script = """
+                () => {
+                    const connectButton = Array.from(document.querySelectorAll('button'))
+                        .find(btn => btn.innerText.trim() === "Connect");
+
+                    if (connectButton) {
+                        connectButton.scrollIntoView({ behavior: "smooth", block: "center" });
+                        connectButton.click();
+                        return "✅ 'Connect' button clicked successfully!";
+                    } else {
+                        return "❌ 'Connect' button not found on the page.";
+                    }
+                }
+                """
+
+                # Run inside your async function or event loop
+                result = await new_tab.evaluate(connect_script)
+                print(result)
+                await asyncio.sleep(3)
+
+                # Pyppeteer version of the "Send without a note" button click script
+                send_script = """
+                () => {
+                    const sendButton = Array.from(document.querySelectorAll('button'))
+                        .find(btn => btn.innerText.trim() === "Send without a note");
+
+                    if (sendButton) {
+                        sendButton.scrollIntoView({ behavior: "smooth", block: "center" });
+                        sendButton.click();
+                        return "✅ 'Send without a note' button clicked successfully!";
+                    } else {
+                        return "❌ 'Send without a note' button not found on the page.";
+                    }
+                }
+                """
+
+                # Run the script inside your async function or event loop
+                result2 = await new_tab.evaluate(send_script)
+                if 'button clicked successfully!' in result2:
+                    done_task = 1
+            except Exception as err:
+                print(f' THIS ERROR OCCURED {err}')
+
+        
+        else:
+            pass
 
 
         

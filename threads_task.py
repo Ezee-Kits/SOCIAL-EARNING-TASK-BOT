@@ -48,7 +48,7 @@ async def Thread_Task_Bot(page,task,task_url):
         new_tab = new_pages[0]
         await new_tab.bringToFront()
         try:
-            await new_tab.waitForSelector('body', {'timeout': 15000})
+            await new_tab.waitForSelector('body', {'timeout': 30000})
         except Exception:
             print("[INFO] Page loaded with dynamic content (no full navigation).")
 
@@ -67,6 +67,9 @@ async def Thread_Task_Bot(page,task,task_url):
         if 'THREADS/Page Follow'.lower() in task.lower():
             try:
                 print('Following the page...')
+                # await css_scroll_center(new_tab,'div[role="button"]')
+                await new_tab.waitForSelector('div[role="button"]', timeout=10000) 
+                done_task = 1
                 await css_scroll_center(new_tab,'div[role="button"]')
                 result = await new_tab.evaluate("""
                 () => {
