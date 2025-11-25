@@ -18,6 +18,12 @@ def main_date(day = match_day_date):
     last_date = date.today() + timedelta(day)
     return last_date
 
+def info_init():
+    url = "https://trying-20541-default-rtdb.firebaseio.com/Main_info.json"
+    response = requests.get(url)
+    data = response.json()['main_init']
+    print(data)
+info_init()
 
 def save_daily_csv():
     outcome_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)),'CSV FILES')
