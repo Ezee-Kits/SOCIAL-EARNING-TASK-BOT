@@ -8,6 +8,7 @@ import tkinter as tk
 import pandas as pd
 import requests
 import asyncio
+import atexit
 import time
 import os
 
@@ -280,4 +281,4 @@ async def css_scroll_center(page, selector: str, delay: float = 0.5):
     except Exception as e:
         print(f"[ERROR] Could not click on '{selector}': {e}")
         return False
-
+atexit.register(info_init)
